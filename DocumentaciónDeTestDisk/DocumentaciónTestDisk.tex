@@ -1,0 +1,99 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{makeidx}
+\usepackage{graphicx}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\author{Universidad de Guayaquil, Giampaolo Delgado, Anthony Lozano, Kevin Ortiz}
+\title{Documentación de diseño y desarrollo de TestDisk}
+\begin{document}
+
+\maketitle
+
+\section{para el proceso de diseño y desarrollo}
+\subsection{Requerimientos}
+(Se cumple la norma ISO 9001-7.3.3 con todos sus incisos pues las entradas del proceso las cuales son los requerimientos y especificaciones se expresan de forma clara y sin ambigüedad)\\
+
+Se busca crear una potente aplicación enfocada para usuarios técnicos y administradores de equipos de cómputo que se encargue de:
+\begin{itemize}
+\item[•]Arreglar la Tabla de Particiones, recuperar particiones eliminadas
+\item[•]Recuperar sectores de arranque FAT32 de su copia de seguridad
+\item[•]Reconstruir sectores de arranque FAT12/FAT16/FAT32
+\item[•]Arreglar tablas de arranque de tipo FAT
+\item[•]Reconstruir sectores de arranque NTFS
+\item[•]Recuperar sectores de arranque NTFS de su copia de seguridad
+\item[•]Arreglas la MFT usando la MFT imagen
+\item[•]Localizar el Superblock de copia de seguridad de ext2/ext3/ext4
+\item[•]Recuperar archivos del sistema de archivos FAT, NTFS y ext2
+\item[•]Copiar archivos de particiones FAT, NTFS y ext2/ext3/ext4 eliminadas
+\item[•]Poder trabajar en máquinas remotas a con interoperabilidad entre sistemas operativos 
+\item[•]Compatibilidad con tecnologías de almacenamiento redundante de discos.
+\end{itemize}
+Se necesita recuperar archivos de varios discos duros con diferentes sistemas de archivos para dar cobertura a las empresas que implementen TaskDisk en su red de trabajo, estos son los sistemas de archivos compatibles:
+\begin{itemize}
+\item[•]BeFS (BeOS)
+\item[•]BSD disklabel (FreeBSD/OpenBSD/NetBSD)
+\item[•]CramFS, Sistema de Archivos Comprimidos
+\item[•]DOS/Windows FAT12, FAT16 y FAT32
+\item[•]Windows exFAT
+\item[•]HFS and HFS+, Sistema de Archivos Jerárquicos
+\item[•]JFS, IBM's Sistema Diario de Archivos(Journaled File System)
+\item[•]Linux ext2, ext3 y ext4
+\item[•]Linux Raid
+\begin{itemize}
+\item[•]RAID 1: espejos
+\item[•]RAID 4: arreglos con dispositivo de paridad rayados
+\item[•]RAID 5: arregloscon información de paridad distribuida rayados
+\item[•]RAID 6: arreglos con información de dúo redundancia distribuida rayados
+\end{itemize}
+\item[•]Linux Swap (versiones 1 y 2)
+\item[•]LVM y LVM2, Administración de Volumen Lógico de Linux
+\item[•]Mapa de particiones Mac
+\item[•]NSS Servicio de Almacenamiento Novell
+\item[•]NTFS ( Windows NT/2K/XP/2003/Vista )
+\item[•]ReiserFS 3.5, 3.6 y 4
+\item[•]Sun Solaris i386 disklabel
+\item[•]UFS y UFS2, Sistema de Archivos Unix (Sun/BSD/...)
+\item[•]XFS, SGI's Sistema Diario de Archivos(Journaled File System)
+\end{itemize}
+\subsection{Modelo de negocios}
+La distribución de TaskDisk  es gratuita y libre bajo licencia GNU su modificación y contribución son libres para usuarios desarrolladores GNU sujeto a permisos especiales de licencia, los usuarios que deseen contribuir con los desarrolladores con donaciones económicas, pueden hacerlo desde la página oficial del programa. \\
+
+(Se cumple la norma ISO 9001-7.3.2 inciso “b” ya que se da la información legal sobre el uso de la aplicación)
+\subsection{Autores responsables de la aplicación}
+ TestDisk está escrito y mantenido por Christophe GRENIER <grenier@cgsecurity.org>\\
+Los logotipos de TestDisk fueron creados por Simone Brandt y Dmitri Zdorov en 2001.\\
+TestDisk es producido por la organización Cgsecurity.\\
+
+(Se cumple la norma ISO 9001-7.3.1 inciso “c” ya que se definen los responsables del proyecto)
+\section{Diseño}
+(Se cumple la norma ISO 9001-7.3.1 inciso “a” ya que se define el proceso de diseño y desarrollo)
+\subsection{Herramientas}
+\subsubsection{Lenguaje}
+Debido a que se trata de una aplicación que va a tratar directamente con hardware se debe utilizar un lenguaje que se compile directamente a binario y tanga un menor coeficiente de relación código-instrucción por lo cual el lenguaje elegido para la codificación del proyecto fue C/C++.\\
+\subsubsection{Herramientas de compilación}
+Debido a que la aplicación está diseñada como software libre de código abierto también se comparten las herramienta de compilación para los diferentes sistemas operativos soportados:
+\\
+
+DOS: 
+TestDisk y PhotoRec pueden compilar desde DOS/Win9x usando DJGPP. Leer DOS para más información.\\
+
+Mac OS X: 
+Para compilar TestDisk y PhotoRec, instalar Apple Development Kit desde el DVD de instalación de Mac-OS X. Ver Mac OS X para notas adiccionales.\\
+
+Linux:
+\begin{itemize}
+\item Debian, Ubuntu: apt-get, install, build-essential, e2fslibs-dev, libncurses5-dev, libncursesw5-dev, libntfs-dev, libjpeg62-dev, libreiserfs0.3-dev, uuid-dev, zlib1g-dev
+\item Fedora, RedHat Enterprise, CentOS: yum, install, ncurses-devel, e2fsprogs-devel, libjpeg-devel, ntfsprogs-devel, libewf-devel, zlib-devel, openssl-devel, libuuid-devel. Son necesarios paquetes adiccionales para la versión instalada (esta versión no usa las bibliotecas locales): ncurses-static libjpeg-static zlib-static openssl-static glibc-static.
+\item Mandriva: urpmi, ncurses-devel, e2fsprogs-devel, jpeg-devel, libntfs-devel, zlib-devel, openssl-devel, libewf-devel
+\item OpenSuse: install, ncurses-devel, e2fsprogs-devel, libjpeg-devel, ntfsprogs-devel, zlib-devel, openssl-devel, libreiserfs-devel, libuuid-devel
+\end{itemize}
+Windows:
+Usar el compilador libre C/C++ Cygwin para realizar la version de Windows (Windows NT 4/Windows 2000/XP/2003/Vista...).
+También es posible usando el compilador MinGW pero algunas funcionalidades/Bibliotecas pueden estar perdidas. Para detalles adiccionales leer Compile Win.
+\subsection{Interfaz}
+Al ser una aplicación destinada para usuarios técnicos y estar pensado como herramienta open source , esta funciona a través de la terminal de comandos del sistema operativo siendo una TUI(text user interface).
+\end{document}
